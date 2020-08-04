@@ -26,7 +26,8 @@ table(testReadSAT_C$ClusterLabel)
 
 #--------------- DT ----------------------
 set.seed(10)
-# Grow tree 
+# Grow tree
+# rpart 递归分区和回归树
 fit_clust <- rpart(ClusterLabel ~ .,trainReadSAT_C,  method="class")
 print(fit_clust)
 
@@ -42,6 +43,7 @@ classification_Clust <- table(Predicted_class = predicted_clust,
                               Actual_class = testReadSAT_C$ClusterLabel) 
 classification_Clust 
 
+# Confusion Matrix，混淆矩阵，用于展示模型预测精度的一种较为常见的方法
 confusionMatrix(classification_Clust)
 
 FPR <- 1- specificity(classification_Clust)

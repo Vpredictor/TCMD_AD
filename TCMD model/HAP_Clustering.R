@@ -16,9 +16,11 @@ str(satellite_data)
 
 #------ Normalization  --------
 normalized_satellite_data <- satellite_data
+# preprocess是预测的预处理
 preprocessParams<-preProcess(satellite_data[,1:36], method="range" )
 normalized_satellite_data <- predict(preprocessParams, satellite_data[,1:36])
 head(normalized_satellite_data )
+# 如果normalized_satellite_data为TRUE,则normalized_satellite_data置为0
 normalized_satellite_data[is.na(normalized_satellite_data)]<-0
 
 
@@ -31,6 +33,7 @@ satellite_plot  + scale_color_manual(labels = c("Normal", "Anomaly"), breaks = c
 dev.off()
 
 #------------ Hierarchical Affinity propagation-------------
+# negDistMat根据数据集计算相似度矩阵
 sim <- negDistMat(normalized_satellite_data, r=1)
 ##run affinity propagation
 apres <- apcluster(sim,  details=TRUE)
@@ -41,7 +44,8 @@ aggres <- aggExCluster(sim, apres)
 ## show information
 show(aggres)
 
-#----- label 
+#----- label
+# labels 从对象中找到一组合适的标签以用于打印或绘图
 Label_HAP= labels(cutree(aggres,2)  , type ="enum" ) ## "1" = "anomaly" class And "2" = "normal"
 table( Pred = Label_HAP, True = satellite_data$V37)
 
@@ -55,6 +59,7 @@ table(Label_HAP)
 #-------- adjustedRand 
 labels_true <- as.integer(satellite_data$V37)
 labels_pred_HAP <- Label_HAP
+# 测量labels_true和labels_pred_HAP两个分区间的一致性
 adjustedRand(labels_true,labels_pred_HAP , randMethod = "HA")
 
 #------ Visualization for HAP 
